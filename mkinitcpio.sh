@@ -1,5 +1,7 @@
 #! /bin/bash
 
+(( EUID != 0 )) && exec sudo -- "$0" "$@"
+
 backupDir="./backup"
 
 if [ ! -d "$backupDir" ]; then
@@ -20,8 +22,8 @@ fi
 
 if ! grep --silent "^HOOKS=.*\bshutdown\b" "$configFile"
 then
-    sudo sed -i 's/\(HOOKS="\)/\1shutdown /' "$configFile"
-    sudo mkinitcpio -p "$presetFile"
+    sed -i 's/\(HOOKS="\)/\1shutdown /' "$configFile"
+    mkinitcpio -p "$presetFile"
 else
     echo "'shutdown' already in $configFile, exiting..."
     exit
